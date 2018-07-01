@@ -5,8 +5,8 @@ mongoose.connect("mongodb://localhost:27017/Codecards");
 
 var Userstory = mongoose.model("Userstory", {
   title: { type: String, required: true, minlength: 1, trim: true },
-  description: { type: String },
-  status: { type: String }
+  description: { type: String, default: null },
+  status: { type: String, default: null }
 });
 
 let newStory = new Userstory({
