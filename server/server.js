@@ -1,25 +1,42 @@
-let mongoose = require("mongoose");
-mongoose.Promise = global.Promise;
+let express = require("express");
+let bodyParser = require("body-parser");
 
-mongoose.connect("mongodb://localhost:27017/Codecards");
+let { mongoose } = require("./db/mongoose");
+let { Userstory } = require("./models/Userstory");
 
-var Userstory = mongoose.model("Userstory", {
-  title: { type: String, required: true, minlength: 1, trim: true },
-  description: { type: String, default: null },
-  status: { type: String, default: null }
+let app = express();
+app.use(bodyParser.json());
+
+//POST - Create New Userstory
+app.post("/userstories", (req, res) => {
+  let userstory = new Userstory({
+    title: req.body.title,
+    description: req.body.description,
+    status: req.body.status
+  });
+
+  userstory.save().then(
+    doc => {
+      res.status(200).send(doc);
+      console.log(req.body);
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
 });
 
-let newStory = new Userstory({
-  title: "Discover endpoints",
-  description: "Need to research Jenkins XML API",
-  status: "Defined"
+app.get("/userstories", (req, res) => {
+  Userstory.find().then(
+    userstories => {
+      res.status(200).send({ userstories });
+    },
+    e => {
+      res.status(400).send(e);
+    }
+  );
 });
 
-newStory.save().then(
-  doc => {
-    console.log(doc);
-  },
-  e => {
-    console.log("Insert Failed");
-  }
-);
+app.listen(3000, () => {
+  console.log("Running on port 3000");
+});
