@@ -1,5 +1,6 @@
-let express = require("express");
-let bodyParser = require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
+const _ = require("lodash");
 
 let { mongoose } = require("./db/mongoose");
 let ObjectId = require("mongodb").ObjectID;
@@ -84,7 +85,36 @@ app.delete("/userstories/:id", (req, res) => {
 });
 
 //UPDATE - Update documents in MongoDB
+app.patch("/userstories/:id", (req, res) => {
+  let id = req.params.id;
 
+  let body = _.pick(req.body, ["title", "description", "status"]);
+
+  if (!ObjectId.isValid(id)) {
+    res.status(404).send;
+  }
+
+  Userstory.findByIdAndUpdate(
+    id,
+    {
+      $set: body
+    },
+    {
+      new: true
+    }
+  )
+    .then(userstory => {
+      if (!userstory) {
+        return res.status(404).send();
+      }
+      res.send({ userstory });
+    })
+    .catch(e => {
+      res.status(400).send();
+    });
+});
+
+//run server on localhost
 app.listen(port, () => {
   console.log(`Server live on ${port}`);
 });
