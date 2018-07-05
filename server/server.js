@@ -2,9 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
 
-let { mongoose } = require("./db/mongoose");
 let ObjectId = require("mongodb").ObjectID;
 let { Userstory } = require("./models/Userstory");
+let { User } = require('./models/user')
 
 let app = express();
 const port = 3000;
@@ -34,7 +34,9 @@ app.post("/userstories", (req, res) => {
 app.get("/userstories", (req, res) => {
   Userstory.find().then(
     userstories => {
-      res.status(200).send({ userstories });
+      res.status(200).send({
+        userstories
+      });
     },
     e => {
       res.status(400).send(e);
@@ -55,7 +57,9 @@ app.get("/userstories/:id", (req, res) => {
       if (!userstory) {
         res.status(404).send();
       } else {
-        res.send({ userstory });
+        res.send({
+          userstory
+        });
       }
     })
     .catch(e => {
@@ -64,7 +68,6 @@ app.get("/userstories/:id", (req, res) => {
 });
 
 //DELETE - purges a single document given an _id
-
 app.delete("/userstories/:id", (req, res) => {
   let id = req.params.id;
 
@@ -95,11 +98,9 @@ app.patch("/userstories/:id", (req, res) => {
   }
 
   Userstory.findByIdAndUpdate(
-    id,
-    {
+    id, {
       $set: body
-    },
-    {
+    }, {
       new: true
     }
   )
@@ -107,12 +108,27 @@ app.patch("/userstories/:id", (req, res) => {
       if (!userstory) {
         return res.status(404).send();
       }
-      res.send({ userstory });
+      res.send({
+        userstory
+      });
     })
     .catch(e => {
       res.status(400).send();
     });
 });
+
+//POST - create new users
+app.post('/users', (req, res) => {
+  let body = _.pick(req.body, ['email', 'password'])
+  let user = new User(body)
+  user.save().then(() => {
+    return user.generateAuthToken();
+  }).then((token) => {
+    res.header('x-auth', token).send(user)
+  }).catch((e) => {
+    res.status(400).send(e)
+  })
+})
 
 //run server on localhost
 app.listen(port, () => {
