@@ -117,7 +117,21 @@ app.patch("/userstories/:id", (req, res) => {
     });
 });
 
-//POST - create new users
+//GET - users --Test pending
+app.get('/users/me', (req, res) => {
+  let token = req.header('x-auth')
+
+  User.findByToken(token).then((user) => {
+    if (!user) {
+      return Promise.reject()
+    }
+    res.send(user)
+  }).catch((e) => {
+    res.status(401).send()
+  })
+})
+
+//POST - create new users --Test pending
 app.post('/users', (req, res) => {
   let body = _.pick(req.body, ['email', 'password'])
   let user = new User(body)
