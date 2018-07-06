@@ -3,11 +3,10 @@ const bodyParser = require("body-parser");
 const _ = require("lodash");
 
 let ObjectId = require("mongodb").ObjectID;
-let { Userstory } = require("./models/Userstory");
+let { Userstory } = require("./models/userstory");
 let { User } = require('./models/user')
 
 let app = express();
-const port = 3000;
 
 app.use(bodyParser.json());
 
@@ -117,34 +116,23 @@ app.patch("/userstories/:id", (req, res) => {
     });
 });
 
-//GET - users --Test pending
-app.get('/users/me', (req, res) => {
-  let token = req.header('x-auth')
-
-  User.findByToken(token).then((user) => {
-    if (!user) {
-      return Promise.reject()
-    }
-    res.send(user)
-  }).catch((e) => {
-    res.status(401).send()
-  })
-})
-
-//POST - create new users --Test pending
+// POST /users
+// returns a header which contains the jSON web token
 app.post('/users', (req, res) => {
-  let body = _.pick(req.body, ['email', 'password'])
-  let user = new User(body)
+  var body = _.pick(req.body, ['email', 'password']);
+  var user = new User(body);
+
   user.save().then(() => {
     return user.generateAuthToken();
   }).then((token) => {
-    res.header('x-auth', token).send(user)
+    res.header('x-auth', token).send(user);
   }).catch((e) => {
-    res.status(400).send(e)
+    res.status(400).send(e);
   })
-})
+});
+
 
 //run server on localhost
-app.listen(port, () => {
+app.listen(3000, () => {
   console.log(`Server live on ${port}`);
 });
