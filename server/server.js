@@ -2,13 +2,13 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
 
+let { mongoose } = require("./db/mongoose");
 let ObjectId = require("mongodb").ObjectID;
 let { Userstory } = require("./models/userstory");
-let { User } = require('./models/user')
-let { authenticate } = require('./middleware/authenticate');
+let { User } = require("./models/user");
+let { authenticate } = require("./middleware/authenticate");
 
 let app = express();
-
 app.use(bodyParser.json());
 
 //POST - Create New Userstory
@@ -98,9 +98,11 @@ app.patch("/userstories/:id", (req, res) => {
   }
 
   Userstory.findByIdAndUpdate(
-    id, {
+    id,
+    {
       $set: body
-    }, {
+    },
+    {
       new: true
     }
   )
@@ -119,25 +121,29 @@ app.patch("/userstories/:id", (req, res) => {
 
 // POST /users
 // returns a header which contains the jSON web token
-app.post('/users', (req, res) => {
-  var body = _.pick(req.body, ['email', 'password']);
+app.post("/users", (req, res) => {
+  var body = _.pick(req.body, ["email", "password"]);
   var user = new User(body);
 
-  user.save().then(() => {
-    return user.generateAuthToken();
-  }).then((token) => {
-    res.header('x-auth', token).send(user);
-  }).catch((e) => {
-    res.status(400).send(e);
-  })
+  user
+    .save()
+    .then(() => {
+      return user.generateAuthToken();
+    })
+    .then(token => {
+      res.header("x-auth", token).send(user);
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
 });
 
 //verifies user according to jwt, and returns a user object
-app.get('/users/me', authenticate, (req, res) => {
+app.get("/users/me", authenticate, (req, res) => {
   res.send(req.user);
 });
 
 //run server on localhost
 app.listen(3000, () => {
-  console.log(`Server live on ${port}`);
+  console.log(`Server live on port 3K`);
 });

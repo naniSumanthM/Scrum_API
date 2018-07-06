@@ -1,6 +1,9 @@
 let mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
 
-mongoose.connect("mongodb://localhost:27017/Codecards");
+mongoose.connect(
+  "mongodb://localhost:27017/Codecards",
+  { useNewUrlParser: true }
+);
 
 module.exports = { mongoose };

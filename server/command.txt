@@ -1,0 +1,2 @@
+//start mongo server: Sumanths-MacBook-Pro:bin sumanth$ ./mongod --dbpath ~/mongo-data
+//start mongo client via terminal : Sumanths-MacBook-Pro:bin sumanth$ ./mongo
