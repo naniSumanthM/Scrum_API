@@ -5,6 +5,7 @@ const _ = require("lodash");
 let ObjectId = require("mongodb").ObjectID;
 let { Userstory } = require("./models/userstory");
 let { User } = require('./models/user')
+let { authenticate } = require('./middleware/authenticate');
 
 let app = express();
 
@@ -131,6 +132,10 @@ app.post('/users', (req, res) => {
   })
 });
 
+//verifies user according to jwt, and returns a user object
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
+});
 
 //run server on localhost
 app.listen(3000, () => {
