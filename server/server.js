@@ -9,6 +9,8 @@ let { User } = require("./models/user");
 let { authenticate } = require("./middleware/authenticate");
 
 let app = express();
+let port = process.env.PORT || 3000;
+
 app.use(bodyParser.json());
 
 // POST /users
@@ -171,6 +173,6 @@ app.patch("/userstories/:id", authenticate, (req, res) => {
 });
 
 //run server on localhost
-app.listen(3000, () => {
-  console.log(`Server live on port 3K`);
+app.listen(port, () => {
+  console.log(`Server live on port ${port}`);
 });
