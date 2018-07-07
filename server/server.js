@@ -90,7 +90,6 @@ app.delete("/userstories/:id", (req, res) => {
 //UPDATE - Update documents in MongoDB
 app.patch("/userstories/:id", (req, res) => {
   let id = req.params.id;
-
   let body = _.pick(req.body, ["title", "description", "status"]);
 
   if (!ObjectId.isValid(id)) {
@@ -122,8 +121,8 @@ app.patch("/userstories/:id", (req, res) => {
 // POST /users
 // returns a header which contains the jSON web token
 app.post("/users", (req, res) => {
-  var body = _.pick(req.body, ["email", "password"]);
-  var user = new User(body);
+  let body = _.pick(req.body, ["email", "password"]);
+  let user = new User(body);
 
   user
     .save()
@@ -141,6 +140,34 @@ app.post("/users", (req, res) => {
 //verifies user according to jwt, and returns a user object
 app.get("/users/me", authenticate, (req, res) => {
   res.send(req.user);
+});
+
+//Post method - login users
+app.post("/users/login", (req, res) => {
+  let body = _.pick(req.body, ["email", "password"]);
+
+  User.findByCredentials(body.email, body.password)
+    .then(user => {
+      user.generateAuthToken().then(token => {
+        res.header("x-auth", token).send(user);
+      });
+    })
+    .catch(e => {
+      res.status(400).send(e);
+    });
+});
+
+//DELETE method - logout
+
+app.delete("/users/me/token", authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(
+    () => {
+      res.status(200).send();
+    },
+    () => {
+      res.status(400).send();
+    }
+  );
 });
 
 //run server on localhost
