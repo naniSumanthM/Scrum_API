@@ -8,8 +8,8 @@ let { Userstory } = require("./models/userstory");
 let { User } = require("./models/user");
 let { authenticate } = require("./middleware/authenticate");
 
-let app = express();
 let port = process.env.PORT || 3000;
+let app = express();
 
 app.use(bodyParser.json());
 
