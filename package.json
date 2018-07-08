@@ -1,10 +1,10 @@
 {
   "name": "node_api_scrum_board",
   "version": "1.0.0",
-  "description": "",
+  "description": "RESTful service that represent a scrum board",
   "main": "script.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server/server.js"
   },
   "engines": {
     "node": "8.9.4"

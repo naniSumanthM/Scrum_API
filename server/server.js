@@ -8,8 +8,8 @@ let { Userstory } = require("./models/userstory");
 let { User } = require("./models/user");
 let { authenticate } = require("./middleware/authenticate");
 
-let port = process.env.PORT || 3000;
 let app = express();
+let port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -172,7 +172,6 @@ app.patch("/userstories/:id", authenticate, (req, res) => {
     });
 });
 
-//run server on localhost
 app.listen(port, () => {
   console.log(`Server live on port ${port}`);
 });
