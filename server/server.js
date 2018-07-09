@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 // POST /users
 // returns a header which contains the jSON web token
+// inserts new token in the mongoDB
 app.post("/users", (req, res) => {
   let body = _.pick(req.body, ["email", "password"]);
   let user = new User(body);
@@ -38,6 +39,7 @@ app.get("/users/me", authenticate, (req, res) => {
 });
 
 //Post method - login users
+//inserts new JSON web token to MongoDB
 app.post("/users/login", (req, res) => {
   let body = _.pick(req.body, ["email", "password"]);
 

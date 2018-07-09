@@ -1,5 +1,8 @@
 let { User } = require("./../models/user");
 
+//middleware function used to parse x-auth value from header
+//Find user by token and validate
+
 let authenticate = (req, res, next) => {
   let token = req.header("x-auth");
 

@@ -42,6 +42,7 @@ UserSchema.methods.toJSON = function() {
   return _.pick(userObject, ["_id", "email"]);
 };
 
+//Created new x-auth token and pushes it to [] in Mongo Users collection
 UserSchema.methods.generateAuthToken = function() {
   let user = this;
   let access = "auth";
@@ -56,6 +57,7 @@ UserSchema.methods.generateAuthToken = function() {
   });
 };
 
+//Purges jwt token, and logs out user
 UserSchema.methods.removeToken = function(token) {
   let user = this;
 
@@ -66,6 +68,7 @@ UserSchema.methods.removeToken = function(token) {
   });
 };
 
+//Queires collection to find user by token
 UserSchema.statics.findByToken = function(token) {
   let User = this;
   let decoded;
@@ -83,6 +86,7 @@ UserSchema.statics.findByToken = function(token) {
   });
 };
 
+//used for login method, to validate user credentials
 UserSchema.statics.findByCredentials = function(email, password) {
   let User = this;
 
